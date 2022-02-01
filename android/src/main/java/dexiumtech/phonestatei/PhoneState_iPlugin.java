@@ -10,6 +10,8 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.telecom.TelecomManager;
+import android.util.Log;
 
 //import android.os.Bundle;
 //import android.os.Environment;
@@ -36,6 +38,7 @@ public class PhoneState_iPlugin implements EventChannel.StreamHandler {
 
     private PhoneStateListener mPhoneListener;
     private final TelephonyManager telephonyManager;
+    private final TelecomManager telecomManager;
 
     /** flag used for state */
     public static Boolean phoneCallOn=false;
@@ -44,11 +47,12 @@ public class PhoneState_iPlugin implements EventChannel.StreamHandler {
     /** telephone manager */
     private PhoneState_iPlugin(Context context) {
         telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+        telecomManager = (TelecomManager) context.getSystemService(context.TELECOM_SERVICE);
     }
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
-        mPhoneListener = createPhoneStateListener(events);
+        mPhoneListener = createPhoneStateListener(events, arguments.toString());
         telephonyManager.listen(mPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
@@ -57,23 +61,29 @@ public class PhoneState_iPlugin implements EventChannel.StreamHandler {
         ///
     }
 
-    PhoneStateListener createPhoneStateListener(final EventChannel.EventSink events){
+    PhoneStateListener createPhoneStateListener(final EventChannel.EventSink events, final String arguments){
         return new PhoneStateListener(){
             @Override
             public void onCallStateChanged (int state, String phoneNumber){
-
-                switch (state) {
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        phoneCallOn = false;
-                        break;
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        phoneCallOn = true;
-                        break;
-                    case TelephonyManager.CALL_STATE_RINGING:
-                        phoneCallOn = true;
-                        break;
-                }
-                events.success(phoneCallOn.toString());
+                if(state == TelephonyManager.CALL_STATE_IDLE){
+                    phoneCallOn = false;
+                } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    phoneCallOn = true;
+                    if(phoneNumber.equals(arguments)){
+                        try{
+                            if (telecomManager != null) {
+                              boolean success = telecomManager.endCall();
+                              // success == true if call was terminated.
+                            }
+                          } catch(Exception e){
+                            Log.d("",e.getMessage());
+                          }
+                    }
+                    
+                } else if(state == TelephonyManager.CALL_STATE_RINGING) {
+                    phoneCallOn = true;
+                } 
+                events.success(phoneNumber);
             }
         };
     }

@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:phone_state_i/phone_state_i.dart';
@@ -30,12 +29,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   StreamSubscription streamSubscription;
 
   @override
   Widget build(BuildContext context) {
-
     print('setstate');
     return new Scaffold(
       appBar: new AppBar(
@@ -64,14 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     super.dispose();
     streamSubscription.cancel();
-
   }
 
   @override
   void initState() {
     super.initState();
-    streamSubscription = phoneStateCallEvent.listen((PhoneStateCallEvent event) {
-      print('Call is Incoming or Connected' + event.stateC);
+    streamSubscription =
+        phoneStateCallEvent.listen((PhoneStateCallEvent event) {
+      print('Call is Incoming or Connected' + event.phoneNumber);
       //event.stateC has values "true" or "false"
     });
   }

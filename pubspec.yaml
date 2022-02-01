@@ -1,15 +1,20 @@
 name: phone_state_i
-description: Listen to Phone Call State and provide call back
-version: 0.0.1
-author: Apurv2017 <apurv.hajare@gmail.com>
+description: Listen to Phone Call State(phone is connected/Idle) and provide call back on both iOS and andriod devices.
+version: 0.0.3
 homepage: https://github.com/Apurv2017/PhoneCallState
 
 dependencies:
   flutter:
     sdk: flutter
+  meta: ^1.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: ">=2.0.0-dev.28.0 <3.0.0"
+  flutter: ">=0.1.4 <2.0.0"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -19,6 +24,7 @@ flutter:
   plugin:
     androidPackage: dexiumtech.phonestatei
     pluginClass: PhoneState_iPlugin
+    
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
